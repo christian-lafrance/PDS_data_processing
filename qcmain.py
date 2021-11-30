@@ -258,8 +258,12 @@ def main():
     tmf901b = sl.file_uploader('Upload blank TMF-901B:')
         
     strip_images = sl.file_uploader('Drag and drop all strip image folders together: ', accept_multiple_files=True)
-    
+       
     foldernames = sl.text_input("Strip image folder names (Must be from USB drive): ").split(' ')
+    
+    for i,image in enumerate(strip_images):
+        sl.info(foldernames[i])
+        sl.image(image)
     
     file_name = "Completed file"
     
@@ -270,7 +274,6 @@ def main():
             pd.read_csv(csv), file_name, foldernames, strip_images
             )
         
-        sl.text(strip_image_dict)
         
         file = generate_tmf901b(test_objects, tmf901b, strip_image_dict)
     
