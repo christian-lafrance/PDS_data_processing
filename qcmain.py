@@ -254,14 +254,14 @@ def main():
     
     # Read in data
     csv = sl.file_uploader("Upload TestResults.csv")
-    strip_images = sl.file_uploader('Drag and drop all strip image folders together: ', accept_multiple_files=True)
     
-    tmf901b = sl.file_uploader('Upload TMF-901B:')
+    tmf901b = sl.file_uploader('Upload blank TMF-901B:')
+        
+    strip_images = sl.file_uploader('Drag and drop all strip image folders together: ', accept_multiple_files=True)
     
     foldernames = sl.text_input("Strip image folder names (Must be from USB drive): ").split(' ')
     
     file_name = "Completed file"
-    filepath = sl.text_input('Filepath to save TMF-901B and CSV: ')
     
     done = sl.button('Done')
     
@@ -269,6 +269,9 @@ def main():
         test_objects, strip_image_dict = read_in(
             pd.read_csv(csv), file_name, foldernames, strip_images
             )
+        
+        sl.text(strip_image_dict)
+        
         file = generate_tmf901b(test_objects, tmf901b, strip_image_dict)
     
         file.save('test.docx')
@@ -277,9 +280,6 @@ def main():
         sl.download_button("Download completed TMF-901B", f)
         f.close()
         
-        file.save(filepath + '/' + 'completed TMF-901B.docx')
-        
-        sl.success("Exported documents successfully.")
 
         
 
