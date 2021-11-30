@@ -258,6 +258,8 @@ def main():
     tmf901b = sl.file_uploader('Upload blank TMF-901B:')
         
     strip_images = sl.file_uploader('Drag and drop all strip image folders together: ', accept_multiple_files=True)
+    
+    sl.info(strip_images) ############
        
     foldernames = sl.text_input("Strip image folder names (Must be from USB drive): ").split(' ')
     
