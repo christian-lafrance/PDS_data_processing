@@ -14,7 +14,7 @@ from docx import Document
 class QcClass:
     
     def __init__(self, test_ID, test_num, test_type, ltr_pos, ctrl_val, 
-                        ver_val, ltr_val, strip_image, time, date):
+                        ver_val, ltr_val, time, date):
     
         self.test_ID = test_ID
         print(test_ID)
@@ -39,9 +39,17 @@ class QcClass:
         self.ctrl_val = ctrl_val
         self.ver_val = ver_val
         self.ltr_val = ltr_val
-        self.strip_image = strip_image
         self.time = time
         self.date = date
+        
+    def generate_foldername(self):
+        d = str(self.date[2:])
+        t = str(self.time)
+    
+        folder_name = d.replace('-', '') + '_' + t.replace(':', '_')
+        
+        return folder_name
+        
 
 
 def image(foldernames, strip_images):
@@ -54,15 +62,6 @@ def image(foldernames, strip_images):
         print(strip_image_dict)
     return strip_image_dict
     
-def generate_foldername(time, date):
-    # create filename
-    d = str(date[2:])
-    t = str(time)
-
-    folder_name = d.replace('-', '') + '_' + t.replace(':', '_')
-    
-    return folder_name
-
 
 def inst(
         test_ID, test_num, test_type, ltr_pos, ctrl_val, 
@@ -74,10 +73,9 @@ def inst(
     
     for i, test in enumerate(test_ID):
         if 'buffer' not in test_ID[i]:
-            folder_name = generate_foldername(time[i], date[i])
             
             temp_test = QcClass(test_ID[i], test_num[i], test_type[i], ltr_pos[i], ctrl_val[i], 
-                            ver_val[i], ltr_val[i], strip_image_dict[folder_name], time[i], date[i])
+                            ver_val[i], ltr_val[i], time[i], date[i])
             
             if retest_pat in temp_test.test_ID:
                 retests.append(temp_test)
@@ -149,7 +147,7 @@ def read_in(csv, file_name, foldernames, strip_images):
     
         
 
-def generate_tmf901b(test_objects, tmf901b, strip_image_dict):
+def generate_tmf901b(test_objects, tmf901b, strip_image_dict, filepath):
 
     document = Document(tmf901b)
     
@@ -205,7 +203,10 @@ def generate_tmf901b(test_objects, tmf901b, strip_image_dict):
         # strip image
         paragraph = row_cells[-3].paragraphs[0]
         run = paragraph.add_run()
-        run.add_picture(test.strip_image, width=3100000, height=660000)
+        #run.add_picture(test.strip_image, width=3100000, height=660000)
+        
+        run.add_picture(filepath + '/' + test.generate_foldername() + '/Strip.jpg', width=3100000, height=660000)
+        
         a, b, c = row_cells[-3:]
         a.merge(b)
         a.merge(c)
@@ -258,16 +259,15 @@ def main():
     tmf901b = sl.file_uploader('Upload blank TMF-901B:')
         
     strip_images = sl.file_uploader('Drag and drop all strip image folders together: ', accept_multiple_files=True)
+    filepath = sl.text_input('Filepath to strip_images folder: ')
     
-    sl.info(strip_images) ############
-       
+    
     foldernames = sl.text_input("Strip image folder names (Must be from USB drive): ").split(' ')
     
-    for i,image in enumerate(strip_images):
-        sl.info(foldernames[i])
-        sl.image(image)
-    
     file_name = "Completed file"
+    
+    
+    balloons = sl.checkbox("Balloons")
     
     done = sl.button('Done')
     
@@ -276,8 +276,9 @@ def main():
             pd.read_csv(csv), file_name, foldernames, strip_images
             )
         
+        sl.text(strip_image_dict)
         
-        file = generate_tmf901b(test_objects, tmf901b, strip_image_dict)
+        file = generate_tmf901b(test_objects, tmf901b, strip_image_dict, filepath)
     
         file.save('test.docx')
         
@@ -285,6 +286,8 @@ def main():
         sl.download_button("Download completed TMF-901B", f)
         f.close()
         
+        if balloons == True:
+            sl.balloons()
 
         
 
