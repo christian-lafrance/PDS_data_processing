@@ -2,6 +2,7 @@ import streamlit as sl
 import pandas as pd
 import re
 from docx import Document
+from pathlib import Path
 
 
 # sheet_names = ['1. Overview', '2. Data Entry', '3. Lot Consistency & CV', 
@@ -204,9 +205,9 @@ def generate_tmf901b(test_objects, tmf901b, strip_image_dict, filepath):
         paragraph = row_cells[-3].paragraphs[0]
         run = paragraph.add_run()
         #run.add_picture(test.strip_image, width=3100000, height=660000)
-        sl.text(filepath + '/' + test.generate_foldername() + '/Strip.jpg')
-        run.add_picture('Streamlit_rakuten/' + filepath + '/' + test.generate_foldername() + '/Strip.jpg', width=3100000, height=660000)
-        
+        picture = Path(__file__).parents[1] / filepath + '/' + test.generate_foldername() + '/Strip.jpg'
+        run.add_picture(picture, width=3100000, height=660000)
+        # 'Streamlit_rakuten/' + 
         
         a, b, c = row_cells[-3:]
         a.merge(b)
