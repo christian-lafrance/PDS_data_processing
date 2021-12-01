@@ -1,3 +1,4 @@
+import os
 import streamlit as sl
 import pandas as pd
 import re
@@ -205,7 +206,8 @@ def generate_tmf901b(test_objects, tmf901b, strip_image_dict, filepath):
         paragraph = row_cells[-3].paragraphs[0]
         run = paragraph.add_run()
         #run.add_picture(test.strip_image, width=3100000, height=660000)
-        picture = Path(__file__).parents[1] / filepath + '/' + test.generate_foldername() + '/Strip.jpg'
+        root = Path(__file__).parent
+        picture = os.path.join(root, (filepath + '/' + test.generate_foldername() + '/Strip.jpg')
         run.add_picture(picture, width=3100000, height=660000)
         # 'Streamlit_rakuten/' + 
         
