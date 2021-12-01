@@ -205,7 +205,7 @@ def generate_tmf901b(test_objects, tmf901b, strip_image_dict, filepath):
         run = paragraph.add_run()
         #run.add_picture(test.strip_image, width=3100000, height=660000)
         sl.text(filepath + '/' + test.generate_foldername() + '/Strip.jpg')
-        run.add_picture(filepath + '/' + test.generate_foldername() + '/Strip.jpg', width=3100000, height=660000)
+        run.add_picture('Streamlit_rakuten/' + filepath + '/' + test.generate_foldername() + '/Strip.jpg', width=3100000, height=660000)
         
         
         a, b, c = row_cells[-3:]
