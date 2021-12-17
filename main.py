@@ -581,20 +581,6 @@ if pipeline == 'PDS':
             read_in = pd.read_csv(data_readin)
     
     study_name = sl.text_input("Study name/number: ", "")
-    if study_name == 'soundboard':
-        selection = sl.radio(
-            'Select one:', ['Gabe', 'gimme the meat', 'sick bro', 'the show must go on',
-            'mmm', 'we goin down', 'red cell happy no red sad', 'makin my way downtown']
-        )
-    
-        sound_dict = {'Gabe':'sound_1.ogg', 'gimme the meat':'sound_2.ogg', 'sick bro':'sound_3.ogg',
-                      'the show must go on':'sound_4.ogg', 'mmm':'sound_5.ogg', 'we goin down':'sound_6.ogg',
-                      'red cell happy no red sad':'sound_7.ogg', 'makin my way downtown':'sound_8.ogg'}
-    
-        audio_file = open(sound_dict[selection], 'rb')
-        audio_bytes = audio_file.read()
-        sl.audio(audio_bytes, format='audio/ogg')
-    
     
     rep_qty = sl.number_input("Number of technical replicates:", min_value=1, max_value=9, step=1)
     
