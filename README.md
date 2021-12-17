@@ -1,4 +1,4 @@
-#Data Processing Pipeline (data_processing)
+Data Processing Pipeline (data_processing)
 
 Link to web application deployed using Streamlit: https://share.streamlit.io/clafrance7/data_processing/main/main.py
 This link goes to the Streamlit app which is streamed from this GitHub repository. 
