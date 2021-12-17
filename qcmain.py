@@ -5,13 +5,6 @@ import re
 from docx import Document
 from pathlib import Path
 
-# sheet_names = ['1. Overview', '2. Data Entry', '3. Lot Consistency & CV', 
-#                '4. Lot Consistency & CV Plots', '5. Plots', '6. Specificity', 
-#                '7. Expected Data', '8. Ref Historical Data', 'Raw Data Edited', 
-#                'Raw Data Unedited', 'Raw Data visual']
-# current_test_type_package = 'SediaBio HIV - Rapid Recency - v8'
-
-
 class QcClass:
     
     def __init__(self, test_ID, test_num, test_type, ltr_pos, ctrl_val, 
@@ -91,36 +84,6 @@ def inst(
     return test_objects
 
 
-
-# def excel_handle(test_objects, ss, qsf_file_name):
-    
-    
-#     sublot_1 = []
-#     sublot_2 = []
-#     sublot_3 = []
-    
-    
-#     xfile = openpyxl.load_workbook(ss)
-
-#     sheet = xfile.get_sheet_by_name(sheet_names[1])
-    
-#     j = 6 # starting location in spreadsheet for N
-#     k = 6 # starting location in spreadsheet for 9169
-#     for i, test in enumerate(test_objects):
-#         if 'N' in test.sample:
-#             sheet[f'H{j}'] = test.ver_val
-#             sheet[f'I{j}'] = test.ltr_val
-#             j += 1
-#         elif '9169' in test.sample:
-#             sheet[f'C{k}'] = test.ver_val
-#             sheet[f'D{k}'] = test.ltr_val
-#             k += 3
-#         if k == 222:
-#             k = 7
-#         elif k == 223:
-#             k = 8
-
-#     xfile.save("{}.xlsx".format(qsf_file_name))
 
     
 def read_in(csv, file_name, foldernames, strip_images):
