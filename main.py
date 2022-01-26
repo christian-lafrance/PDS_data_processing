@@ -82,7 +82,7 @@ class TestClass:
         self.ltr_MAD = round(stats.median(ltr_MAD_list), 3)
         self.ltr_data = ltr_data
 
-
+# search for experimental conditions in test IDs
 def get_conditions(read_in):
     sample_ID = read_in['Test ID'].values
     test_type = read_in['Test Type'].values
@@ -327,6 +327,7 @@ def format_data(dm, rep_qty, lots, condition_list, lines, rep_stats):
 
     return headers, data_for_csv, test_objects
 
+# generate test strip image doc from date and time of test
 def generate_tmf901b(
         df, filepath, panel, test_lines, rep_qty, condition_list, date_comp, 
         version
@@ -464,7 +465,7 @@ def generate_tmf901b(
             )
 
            
-
+# main function calls
 def main():
     
     # file read in.
@@ -542,7 +543,7 @@ version = "v1.4"
 
 
 
-################################## User parameters
+# User parameters and streamlit app appearance
 sl.sidebar.write("""
 # Sedia Data Processing Pipeline {}
 
