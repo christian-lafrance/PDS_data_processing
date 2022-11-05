@@ -573,8 +573,7 @@ if pipeline == 'PDS':
     
     if 'Export Formatted CSV file' in docs_to_export:
         filepath = sl.text_input("Filepath: ", "")
-        filepath += '/'
-        read_in = pd.read_csv(filepath + 'data.csv')
+        read_in = pd.read_csv(f"{filepath}/data.csv", encoding="cp1252", engine="python")
         
     if 'Download formatted data as txt' in docs_to_export:
         data_readin = sl.file_uploader("Upload TestResults.csv")
