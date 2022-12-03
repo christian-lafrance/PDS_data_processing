@@ -1,5 +1,4 @@
 import csv
-import statistics as stats
 from datetime import date
 import re
 
@@ -12,10 +11,16 @@ import specimen_bank
 import qcmain
 
 
-# Class used to store all test data relevant to each specimen tested, 
-# including replicate values and all stats.
 class TestClass:
-
+    '''
+    Class used to store all test data relevant to each specimen tested, 
+    including replicate values and all stats. Replicates are grouped under
+    the shared specimen used. For example, if specimen Boca124 is tested
+    with three replicates, there will be one object for this specimen
+    containing all three replicates saved, as well as stats such as mean
+    and standard deviation of the replicates. Strip scoring data such as
+    search and scoring window coordinates are also stored. 
+    '''
     def __init__(self, formatted_data, rep_qty, index, c=0, condition=""):  
 
         self.fd = formatted_data
@@ -23,6 +28,8 @@ class TestClass:
         self.index = index
         self.ltr_pos = []
         self.ver_pos = []
+
+        # add line scoring positions
         for i in range(3):
             self.ltr_pos.append(formatted_data[index+i][5])
             self.ver_pos.append(formatted_data[index+i][4])
@@ -47,9 +54,7 @@ class TestClass:
         self.ctrl_MAD = round(stats.median(ctrl_MAD_list), 3)
         self.ctrl_data = ctrl_data
         
-
         # VER line stats
-        
         ver_data = []
         
         try:
@@ -82,8 +87,12 @@ class TestClass:
         self.ltr_MAD = round(stats.median(ltr_MAD_list), 3)
         self.ltr_data = ltr_data
 
-# search for experimental conditions in test IDs
-def get_conditions(read_in):
+
+def get_conditions(read_in: list) -> list:
+    '''
+    Parse test ID's from imported csv file for experimental conditions.
+    Conditions must follow naming convention in documentation.
+    '''
     sample_ID = read_in['Test ID'].values
     test_type = read_in['Test Type'].values
     
@@ -102,16 +111,19 @@ def get_conditions(read_in):
     return condition_list
         
 
-
-# test for normality of data sets.
-def shapiro(data):
+def shapiro(data: list) -> str:
+    '''
+    Perform a Shapiro-Wilk test on test line values to test if values
+    come from a normal distribution. Return the p-value. 
+    '''
     result = st.shapiro(data)
     return result[1] # p value
 
 
-# Removes tests with missing data.
-def remove_nan(data_matrix):
-    # ignore tests that have no data.
+def remove_nan(data_matrix: list) -> list:
+    '''
+    Removes any NA values from the data. 
+    '''
     dm = []
     for i in data_matrix:
         if pd.isna(i[1]):
@@ -121,9 +133,15 @@ def remove_nan(data_matrix):
     return dm
 
 
-# uses the specimen name listed in specimens_tested to filter out irrelevant 
-# data if present.
-def remove_irrelevant_testing(data_matrix, panel, condition_list):
+def remove_irrelevant_testing(data_matrix: list, panel: list, condition_list: list) -> list:
+    '''
+    Uses the panel tested and list of experimental conditions to remove irrelevant
+    data from the data matrix. This was implemented because data from multiple 
+    users can be pooled in the exported data by the test strip reader. 
+
+    This function can be bypassed if desired by setting the "is there other data
+    present" to no in the network GUI. 
+    '''
     relevant_data = []
     if multiple_conditions == True:
         # remove tests that are not in panel.
@@ -156,10 +174,14 @@ def remove_irrelevant_testing(data_matrix, panel, condition_list):
             return relevant_data
 
 
-# creates test objects as an instance of the Test class for each specimen run.
-# returns a formatted table for verification and LTR values as atributes of 
-# the test object.
-def format_data(dm, rep_qty, lots, condition_list, lines, rep_stats):
+def format_data(
+    dm: list, rep_qty: int, lots: list, condition_list: list, lines: list, rep_stats: list
+    ) -> list:
+    '''
+    Creates test objects as an instance of the TestClass for each specimen run.
+    Returns a formatted table for verification and LTR values as atributes of 
+    the test object.
+    '''
     test_objects = []
 
     data_for_csv = []
@@ -326,6 +348,7 @@ def format_data(dm, rep_qty, lots, condition_list, lines, rep_stats):
             '''.format(', '.join(ct_message)))
 
     return headers, data_for_csv, test_objects
+
 
 # generate test strip image doc from date and time of test
 def generate_tmf901b(
@@ -573,7 +596,8 @@ if pipeline == 'PDS':
     
     if 'Export Formatted CSV file' in docs_to_export:
         filepath = sl.text_input("Filepath: ", "")
-        read_in = pd.read_csv(f"{filepath}/data.csv", encoding="cp1252", engine="python")
+        filepath += "/"
+        read_in = pd.read_csv(f"{filepath}data.csv", encoding="cp1252", engine="python")
         
     if 'Download formatted data as txt' in docs_to_export:
         data_readin = sl.file_uploader("Upload TestResults.csv")
